@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مركز أكتوبر للتكييف — 70 Logo Concepts</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0F172A;color:#E2E8F0;font-family:'Cairo','Tajawal','Segoe UI',Tahoma,'Noto Naskh Arabic',sans-serif;min-height:100vh}
+header{text-align:center;padding:48px 20px 24px}
+header h1{font-size:clamp(24px,4vw,40px);font-weight:700;color:#F8FAFC;letter-spacing:0}
+header p{margin-top:10px;color:#94A3B8;font-size:15px}
+header .pillars{margin-top:14px;display:inline-flex;gap:10px;flex-wrap:wrap;justify-content:center}
+header .pillars span{border:1px solid #B08D57;color:#D9B87A;border-radius:999px;padding:4px 16px;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;max-width:1700px;margin:0 auto;padding:24px 28px 64px}
+@media(max-width:1400px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.grid{grid-template-columns:1fr;padding:16px}}
+.card{background:#1E293B;border:1px solid #334155;border-radius:16px;padding:16px;cursor:zoom-in;transition:transform .2s,border-color .2s,box-shadow .2s;display:flex;flex-direction:column;gap:12px}
+.card:hover,.card:focus-visible{transform:translateY(-4px);border-color:#B08D57;box-shadow:0 14px 34px rgba(0,0,0,.4);outline:none}
+.meta{display:flex;align-items:flex-start;gap:12px;min-height:58px}
+.num{flex:0 0 auto;min-width:44px;height:44px;border-radius:12px;background:#B08D57;color:#0F172A;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;direction:ltr}
+.txt h2{font-size:14px;color:#F8FAFC;font-weight:700}
+.txt p{font-size:13.5px;line-height:1.7;color:#CBD5E1}
+.art svg{width:100%;height:auto;display:block;border-radius:12px}
+/* Modal */
+#modal{position:fixed;inset:0;background:rgba(2,6,23,.96);z-index:100;display:none;flex-direction:column}
+#modal.open{display:flex}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;background:#0B1220;border-bottom:1px solid #334155;flex-wrap:wrap}
+.bar .cap{color:#E2E8F0;font-size:15px;font-weight:600}
+.btns{display:flex;gap:8px;flex-wrap:wrap;direction:ltr}
+.btns button{background:#1E293B;color:#F8FAFC;border:1px solid #475569;border-radius:10px;padding:9px 16px;font-size:14px;cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s}
+.btns button:hover{background:#334155;border-color:#B08D57}
+.btns button.close{background:#7F1D1D;border-color:#B91C1C}
+.btns button.close:hover{background:#B91C1C}
+#viewport{flex:1;position:relative;overflow:hidden;cursor:grab;touch-action:none;display:flex;align-items:center;justify-content:center;user-select:none}
+#viewport.drag{cursor:grabbing}
+#stage{width:min(78vh,92vw);transform-origin:center center;will-change:transform}
+#stage svg{width:100%;height:auto;display:block;border-radius:16px;pointer-events:none}
+.hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:12px;color:#64748B;pointer-events:none;direction:ltr}
+#zl{color:#94A3B8;font-size:13px;min-width:52px;text-align:center;align-self:center}
+</style>
+</head>
+<body>
+<header>
+  <h1>مركز أكتوبر للتكييف — 70 مقترح شعار</h1>
+  <p>Comprehensive AC services · Maintenance · Installation · System Setup · Sales</p>
+  <div class="pillars"><span>الفخامة</span><span>الاستدامة</span><span>الأمان</span></div>
+</header>
+<main class="grid" id="grid"></main>
+
+<div id="modal" role="dialog" aria-modal="true">
+  <div class="bar">
+    <div class="cap" id="cap"></div>
+    <div class="btns">
+      <button id="zin">Zoom In (+)</button>
+      <button id="zout">Zoom Out (-)</button>
+      <button id="zreset">Reset Zoom</button>
+      <span id="zl">100%</span>
+      <button class="close" id="zclose">Close (X)</button>
+    </div>
+  </div>
+  <div id="viewport"><div id="stage"></div><div class="hint">Mouse wheel = zoom · Drag = pan · Esc = close</div></div>
+</div>
+
+<script>
+/* ---------- Brand ---------- */
+const B={ar:'مركز أكتوبر للتكييف',en:'OCTOBER',sub:'AIR CONDITIONING'};
+
+/* ---------- Helpers ---------- */
+const S=(k,w)=>`fill="none" stroke="${k}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"`;
+const Q=(n,r,st=-90,cx=100,cy=100)=>Array.from({length:n},(_,i)=>{const t=(st+i*360/n)*Math.PI/180;return [cx+r*Math.cos(t),cy+r*Math.sin(t)]});
+const P=(...a)=>Q(...a).map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+const rep=(n,f,step)=>Array.from({length:n},(_,i)=>f(i,i*(step||360/n))).join('');
+const G=(a,s,cx=100,cy=100)=>`<g transform="rotate(${a} ${cx} ${cy})">${s}</g>`;
+const f1=x=>x.toFixed(1);
+const SHIELD='M100 18L168 42V104C168 144 136 168 100 184C64 168 32 144 32 104V42Z';
+const DROP='M0 -26C0 -26 -20 2 -20 12A20 20 0 0 0 20 12C20 2 0 -26 0 -26Z';
+
+/* ---------- 70 Logo Concepts: [Arabic concept, mark(k=ink, a=accent, c=background)] ---------- */
+const L=[
+["مثمّن أضلاع يرمز لـ«أكتوبر» (Octo = 8) يحتضن ورقة تعبّر عن الاستدامة.",
+ (k,a,c)=>`<polygon points="${P(8,82,-67.5)}" ${S(k,5)}/><path d="M100 48C132 78 132 122 100 152C68 122 68 78 100 48Z" fill="${a}"/><path d="M100 64V150" ${S(c,3)}/>`],
+["ندفة ثلج بخطوط دقيقة تختصر التبريد في رمز أنيق وخالد.",
+ (k,a,c)=>`<g ${S(k,4)}>${rep(6,(i,ang)=>G(ang,'<path d="M100 100V22M100 46L84 32M100 46L116 32M100 70L89 61M100 70L111 61"/>'))}</g><circle cx="100" cy="100" r="7" fill="${a}"/>`],
+["درع هندسي تنساب داخله موجات هواء: الأمان والانتعاش في علامة واحدة.",
+ (k,a,c)=>`<path d="${SHIELD}" ${S(k,5)}/><path d="M62 82q19-14 38 0t38 0M62 108q19-14 38 0t38 0M72 134q14-10 28 0t28 0" ${S(a,5)}/>`],
+["حرفا O وC متداخلان: دائرة كاملة ودائرة مفتوحة تتنفس.",
+ (k,a,c)=>`<circle cx="78" cy="100" r="46" ${S(k,8)}/><path d="M157 70A46 46 0 1 0 157 130" ${S(a,8)}/>`],
+["حرف الألف (أ) عموداً شامخاً يعلوه ماسة: بداية الاسم وقمة الفخامة.",
+ (k,a,c)=>`<rect x="93" y="58" width="14" height="108" fill="${k}"/><polygon points="100,20 116,38 100,56 84,38" fill="${a}"/><rect x="66" y="170" width="68" height="5" fill="${a}"/>`],
+["مروحة رباعية الشفرات بتناظر دوراني تمثل حركة الهواء والتكييف.",
+ (k,a,c)=>`${rep(4,(i,ang)=>G(ang,`<path d="M100 100C100 62 118 34 150 42C152 74 132 98 100 100Z" fill="${k}"/>`))}<circle cx="100" cy="100" r="11" fill="${a}"/><circle cx="100" cy="100" r="88" ${S(a,2.5)}/>`],
+["مساحة سلبية: دوامة هواء تُنحت داخل دائرة صلبة.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="80" fill="${k}"/><path d="M50 112C68 84 96 86 106 102C116 118 140 118 152 92M58 138C78 118 98 122 108 134C118 146 134 144 146 128M66 84C78 66 96 64 108 70" ${S(c,7)}/><circle cx="100" cy="100" r="90" ${S(a,2)}/>`],
+["قوس إسلامي مدبب يحيط بندفة ثلج: عمارة عريقة وبرودة عصرية.",
+ (k,a,c)=>`<path d="M40 176V96C40 56 78 32 100 16C122 32 160 56 160 96V176" ${S(k,5)}/><path d="M64 176V100C64 72 88 52 100 44C112 52 136 72 136 100V176" ${S(a,3.5)}/><g ${S(k,3.5)}>${rep(3,(i,ang)=>G(ang,'<path d="M100 90V150"/>',100,120),60)}</g><path d="M28 176H172" ${S(k,5)}/>`],
+["زهرة لوتس مصرية بتناظر بتلي: نقاء الهواء وجذور الهوية.",
+ (k,a,c)=>{const pet='<path d="M100 40C125 75 125 120 100 152C75 120 75 75 100 40Z"/>';return `<g fill="none" stroke="${k}" stroke-width="4">${G(-62,pet,100,152)}${G(62,pet,100,152)}</g><g fill="${a}" stroke="${c}" stroke-width="3">${G(-32,pet,100,152)}${G(32,pet,100,152)}</g><g fill="${k}" stroke="${c}" stroke-width="3">${pet}</g><path d="M54 164Q100 184 146 164" ${S(k,4)}/>`}],
+["قرص الشمس فوق موجات هواء: حرارة تُروَّض بالتكييف.",
+ (k,a,c)=>`<circle cx="100" cy="82" r="38" fill="${a}"/><path d="M36 136q16-11 32 0t32 0t32 0t32 0M46 154q14-10 27 0t27 0t27 0t27 0M60 172q12-9 24 0t24 0t24 0t24 0" ${S(k,5)}/>`],
+["هرم صلب بمعيّن سلبي في قلبه: ثبات وموثوقية وخبرة.",
+ (k,a,c)=>`<polygon points="100,26 174,170 26,170" fill="${k}"/><polygon points="100,92 116,122 100,152 84,122" fill="${c}"/><rect x="26" y="180" width="148" height="5" fill="${a}"/>`],
+["مكعب سداسي ثلاثي الأوجه: هندسة النظام وثلاث ركائز للعلامة.",
+ (k,a,c)=>{const v=Q(6,80);const pt=(...ix)=>ix.map(j=>f1(v[j][0])+','+f1(v[j][1])).join(' ');return `<polygon points="${pt(5,0,1)} 100,100" fill="${a}"/><polygon points="${pt(1,2,3)} 100,100" fill="${k}"/><polygon points="${pt(3,4,5)} 100,100" fill="${c}"/><polygon points="${P(6,80)}" ${S(k,5)}/><polyline points="${pt(1)} 100,100 ${pt(3)}" ${S(k,4)}/><polyline points="100,100 ${pt(5)}" ${S(k,4)}/>`}],
+["أقواس ربعية متتالية تنتشر كتدفق هواء من نقطة الأصل.",
+ (k,a,c)=>`${[40,70,100,130].map((r,i)=>`<path d="M${30+r} 170A${r} ${r} 0 0 0 30 ${170-r}" ${S(i%2?a:k,7)}/>`).join('')}<circle cx="30" cy="170" r="9" fill="${k}"/>`],
+["نجمة ثمانية من مربعين متقاطعين مستوحاة من المشربية ومن الرقم 8.",
+ (k,a,c)=>`<rect x="40" y="40" width="120" height="120" ${S(k,5)}/>${G(45,`<rect x="40" y="40" width="120" height="120" ${S(a,5)}/>`)}<circle cx="100" cy="100" r="20" fill="${k}"/>`],
+["تاج بسيط بخطوط قاطعة: رمز الفخامة في خدمة التكييف.",
+ (k,a,c)=>`<path d="M34 148L44 66L76 102L100 46L124 102L156 66L166 148Z" fill="${k}"/><rect x="34" y="158" width="132" height="14" fill="${a}"/><g fill="${a}"><circle cx="44" cy="58" r="7"/><circle cx="100" cy="38" r="7"/><circle cx="156" cy="58" r="7"/></g>`],
+["معيّنات متداخلة تتقلص نحو المركز: تركيز وإتقان.",
+ (k,a,c)=>`<polygon points="${P(4,84)}" ${S(k,5)}/><polygon points="${P(4,60)}" ${S(a,4)}/><polygon points="${P(4,34)}" fill="${k}"/>`],
+["ورقة شجر تشقها شرائح أفقية كفتحات التكييف: الطبيعة والتقنية معاً.",
+ (k,a,c)=>`<path d="M100 20C158 62 158 132 100 182C42 132 42 62 100 20Z" fill="${k}"/><path d="M30 84H170M30 108H170M30 132H170" ${S(c,5)}/>`],
+["دائرة نصفها كتلة صلبة ونصفها خطوط هواء: الحرارة والبرودة.",
+ (k,a,c)=>`<path d="M100 20A80 80 0 0 0 100 180Z" fill="${k}"/><path d="M100 20A80 80 0 0 1 100 180Z" ${S(k,5)}/>${[55,78,100,122,145].map(y=>`<path d="M108 ${y}H${f1(100+Math.sqrt(6400-(y-100)**2)-10)}" ${S(a,4)}/>`).join('')}`],
+["الرقم 10 (أكتوبر) بحرف الواحد ودائرة الصفر بأسلوب هندسي.",
+ (k,a,c)=>`<polygon points="82,44 82,156 64,156 64,70 44,82 44,60" fill="${k}"/><circle cx="132" cy="100" r="40" ${S(a,16)}/>`],
+["قطرة ماء تحمل ورقة سلبية: استدامة وترشيد.",
+ (k,a,c)=>`<path d="M100 20C100 20 46 88 46 126A54 54 0 0 0 154 126C154 88 100 20 100 20Z" fill="${k}"/><path d="M100 88C124 110 124 138 100 162C76 138 76 110 100 88Z" fill="${c}"/><path d="M100 104V158" ${S(k,3)}/>`],
+["مربع دائري الحواف بشرائح متناقصة: فتحة التكييف كأيقونة راقية.",
+ (k,a,c)=>`<rect x="30" y="30" width="140" height="140" rx="30" ${S(k,5)}/>${[[62,90],[84,78],[106,66],[128,54],[150,42]].map(([y,l],i)=>`<path d="M${100-l/2} ${y}H${100+l/2}" ${S(i==4?a:k,5)}/>`).join('')}`],
+["حلزون خطي بسيط يمثل دوران الهواء وانسيابه نحو المركز.",
+ (k,a,c)=>{let d='';for(let t=0;t<=12.4;t+=.25){const r=4+t*6;d+=(t?'L':'M')+f1(100+r*Math.cos(t))+' '+f1(100+r*Math.sin(t))}return `<path d="${d}" ${S(k,5)}/><circle cx="100" cy="100" r="6" fill="${a}"/>`}],
+["أشجار صنوبر من مثلثات مكدسة: هواء منعش وبيئة نظيفة.",
+ (k,a,c)=>`<g fill="${k}" stroke="${c}" stroke-width="3" stroke-linejoin="round"><polygon points="100,90 166,168 34,168"/><polygon points="100,52 152,124 48,124"/><polygon points="100,20 140,78 60,78"/></g><rect x="92" y="170" width="16" height="16" fill="${a}"/>`],
+["حرف O كلاسيكي بنمط ديدون وعين ذهبية في قلبه: طباعة فاخرة.",
+ (k,a,c)=>`<text x="100" y="146" text-anchor="middle" font-family="Didot,'Bodoni MT','Playfair Display',Georgia,serif" font-size="150" font-weight="700" fill="${k}">O</text><circle cx="100" cy="100" r="9" fill="${a}"/><rect x="60" y="168" width="80" height="4" fill="${a}"/>`],
+["حلقة مفتوحة وشمس صغيرة في فتحتها: تجدد وتنفّس.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="70" fill="none" stroke="${k}" stroke-width="12" stroke-dasharray="380 60"/><circle cx="164" cy="71" r="9" fill="${a}"/><circle cx="100" cy="100" r="28" fill="${k}"/>`],
+["ثلاث شيفرونات كطبقات جبال: ارتفاع وجودة واستدامة.",
+ (k,a,c)=>`<g ${S(k,9)}><path d="M36 92L100 38L164 92"/><path d="M36 128L100 74L164 128"/></g><path d="M36 164L100 110L164 164" ${S(a,9)}/>`],
+["حرف A للهواء (Air) بعارضة ذهبية كأنها أفق النسيم.",
+ (k,a,c)=>`<path d="M38 172L100 28L162 172" ${S(k,9)}/><path d="M66 132H134" ${S(a,9)}/>`],
+["نجمة سداسية من مثلثين متعاكسين: ثبات وتوازن بين الحرارة والبرودة.",
+ (k,a,c)=>`<polygon points="${P(3,82)}" ${S(k,5)}/><polygon points="${P(3,82,90)}" ${S(k,5)}/><polygon points="${P(6,38)}" fill="${a}"/>`],
+["إكليل غار متناظر حول معيّن: تكريم وإتقان وتراث.",
+ (k,a,c)=>{const lf=`<path d="M62 152C34 124 34 76 62 48" ${S(k,4)}/><g fill="${a}">${[[44,132,-20],[37,108,-6],[37,84,6],[44,60,20]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="6" ry="13" transform="rotate(${r} ${x} ${y})"/>`).join('')}</g>`;return `${lf}<g transform="translate(200 0) scale(-1 1)">${lf}</g><polygon points="100,72 118,100 100,128 82,100" fill="${k}"/>`}],
+["درع صلب بعلامة صح سلبية: أمان وضمان للخدمة.",
+ (k,a,c)=>`<path d="${SHIELD}" fill="${k}"/><path d="M66 100L92 126L136 72" ${S(c,12)}/>`],
+["دائرة مقسمة بشرائح رأسية كستائر التهوية، والشريحة الوسطى ذهبية.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="82" fill="${k}"/>${[0,1,2,3,4,5,6].map(i=>{const x=52+i*16,h=Math.sqrt(82*82-(x-100)**2)-16;return `<path d="M${x} ${f1(100-h)}V${f1(100+h)}" ${S(i==3?a:c,4)}/>`}).join('')}`],
+["سهمان هابطان داخل دائرة يرمزان لتدفق الهواء البارد.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="80" ${S(k,5)}/><path d="M64 84L100 116L136 84M64 114L100 146L136 114" ${S(a,8)}/><circle cx="100" cy="56" r="8" fill="${k}"/>`],
+["كرة أرضية خطية بمداري ذهبيين: مسؤولية بيئية عالمية.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="76" ${S(k,5)}/><ellipse cx="100" cy="100" rx="32" ry="76" ${S(k,4)}/><path d="M24 100H176M36 64Q100 84 164 64M36 136Q100 116 164 136" ${S(a,4)}/>`],
+["برعم بورقتين متناظرتين: نمو ونظافة واستدامة.",
+ (k,a,c)=>`<path d="M100 170C60 160 40 120 45 70C90 80 105 120 100 170Z" fill="${k}"/><path d="M100 170C140 160 160 120 155 70C110 80 95 120 100 170Z" fill="${a}"/><path d="M100 170V192" ${S(k,5)}/>`],
+["هلال ونجمة بأسلوب سلبي: ليالي أكتوبر المعتدلة.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="72" fill="${k}"/><circle cx="126" cy="88" r="60" fill="${c}"/><path d="M146 44Q148 66 168 68Q148 70 146 92Q144 70 124 68Q144 66 146 44Z" fill="${a}"/>`],
+["وريقة رباعية من أربع دوائر متقاطعة تحيط بماسة صغيرة.",
+ (k,a,c)=>`${[[100,66],[134,100],[100,134],[66,100]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="34" ${S(k,5)}/>`).join('')}<polygon points="${P(4,16)}" fill="${a}"/>`],
+["دائرة بثلاث موجات: نسيم لطيف ومياه صافية.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="80" ${S(k,5)}/><path d="M38 80q15.5-12 31 0t31 0t31 0t31 0M38 104q15.5-12 31 0t31 0t31 0t31 0M50 128q12.5-10 25 0t25 0t25 0t25 0" ${S(a,5)}/>`],
+["جوهرة سداسية الأوجه بتظليل مسطح: فخامة الأحجار الكريمة.",
+ (k,a,c)=>{const v=Q(6,82);return v.map((p,i)=>{const q=v[(i+1)%6];return `<polygon points="100,100 ${f1(p[0])},${f1(p[1])} ${f1(q[0])},${f1(q[1])}" fill="${[k,a,c][i%3]}" stroke="${k}" stroke-width="3" stroke-linejoin="round"/>`}).join('')}],
+["مروحة بقطاعات دائرية متباعدة: حركة دورانية وفراغات سلبية.",
+ (k,a,c)=>`${rep(3,(i,ang)=>G(ang,`<path d="M100 100V20A80 80 0 0 1 169.3 60Z" fill="${i==1?a:k}"/>`))}`],
+["حلقات هواء متدرجة الانتشار من قلب واحد.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="20" ${S(k,4)}/><circle cx="100" cy="100" r="46" fill="none" stroke="${a}" stroke-width="5" stroke-dasharray="220 69" stroke-linecap="round"/><circle cx="100" cy="100" r="72" fill="none" stroke="${k}" stroke-width="6" stroke-dasharray="330 122" stroke-linecap="round"/><circle cx="100" cy="100" r="7" fill="${k}"/>`],
+["شروق فوق الأفق بأشعة منتظمة: يوم جديد بمناخ مثالي.",
+ (k,a,c)=>`<path d="M32 132A68 68 0 0 1 168 132Z" fill="${a}"/>${rep(7,(i)=>{const t=(180+i*30)*Math.PI/180;return `<path d="M${f1(100+82*Math.cos(t))} ${f1(132+82*Math.sin(t))}L${f1(100+98*Math.cos(t))} ${f1(132+98*Math.sin(t))}" ${S(k,5)}/>`},30)}<path d="M20 146H180M56 164H144" ${S(k,5)}/>`],
+["منزل بخطوط دقيقة وزهرة ثلجية على بابه: التركيب للمنازل.",
+ (k,a,c)=>`<path d="M26 102L100 34L174 102" ${S(k,6)}/><path d="M48 88V168H152V88" ${S(k,6)}/><g ${S(a,4)}>${rep(3,(i,ang)=>G(ang,'<path d="M100 104V148"/>',100,126),60)}</g>`],
+["دائرتان متقاطعتان تصنعان عدسة ذهبية: شراكة وثقة.",
+ (k,a,c)=>`<circle cx="72" cy="100" r="50" ${S(k,5)}/><circle cx="128" cy="100" r="50" ${S(k,5)}/><path d="M100 58.6A50 50 0 0 1 100 141.4A50 50 0 0 1 100 58.6Z" fill="${a}"/>`],
+["شبكة نقاط مستوحاة من المشربية تشكل علامة زائد.",
+ (k,a,c)=>[0,1,2].flatMap(r=>[0,1,2].map(n=>{const ctr=r==1&&n==1,on=(r+n)%2==1||ctr;return `<circle cx="${60+n*40}" cy="${60+r*40}" r="${on?15:12}" fill="${on?(ctr?a:k):'none'}" stroke="${k}" stroke-width="4"/>`})).join('')],
+["هرمان خطيان وشمس: هوية مصرية عصرية.",
+ (k,a,c)=>`<path d="M22 168L84 56L146 168Z" ${S(k,5)}/><path d="M96 168L138 96L180 168Z" ${S(k,5)}/><circle cx="148" cy="54" r="18" fill="${a}"/><path d="M14 168H186" ${S(k,5)}/>`],
+["تاج فوق درع دقيق: فخامة محمية.",
+ (k,a,c)=>`<path d="M100 66L155 84V122C155 152 130 170 100 182C70 170 45 152 45 122V84Z" ${S(k,5)}/><path d="M64 52L74 22L90 40L100 14L110 40L126 22L136 52Z" fill="${a}"/><path d="M100 92V158" ${S(k,4)}/>`],
+["دائرة يشقها شريط مائل سلبي كتيار هواء.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="80" fill="${k}"/><path d="M14 138L186 68V90L14 160Z" fill="${c}"/><circle cx="100" cy="100" r="90" ${S(a,2)}/>`],
+["رمز اللانهاية كمسار هواء مستمر: خدمة دائمة.",
+ (k,a,c)=>`<path d="M100 100C130 50 175 50 175 100C175 150 130 150 100 100C70 50 25 50 25 100C25 150 70 150 100 100Z" ${S(k,10)}/><circle cx="100" cy="100" r="7" fill="${a}"/>`],
+["خمس أوراق تتفتح كزهرة حول نواة: نضارة الهواء.",
+ (k,a,c)=>`${rep(5,(i,ang)=>G(ang,`<path d="M100 100C80 74 84 44 100 20C116 44 120 74 100 100Z" fill="${i%2?a:k}"/>`))}<circle cx="100" cy="100" r="8" fill="${c}"/>`],
+["سرخس متناظر بأغصان تشبه ندفة الثلج: الطبيعة تبرّد.",
+ (k,a,c)=>`<path d="M100 184V40" ${S(k,4)}/>${[0,1,2,3,4].map(j=>{const y=160-j*26,l=34-j*5;return `<path d="M100 ${y}L${100-l} ${f1(y-l*.75)}M100 ${y}L${100+l} ${f1(y-l*.75)}" ${S(k,4)}/>`}).join('')}<path d="M100 40C110 28 110 16 100 10C90 16 90 28 100 40Z" fill="${a}"/>`],
+["إطار مثمن بحرف الألف: مونوغرام عربي فاخر.",
+ (k,a,c)=>`<polygon points="60,28 140,28 172,60 172,140 140,172 60,172 28,140 28,60" ${S(k,5)}/><polygon points="${P(8,70,-67.5)}" ${S(a,2.5)}/><text x="100" y="132" text-anchor="middle" font-family="'Amiri','Noto Naskh Arabic','Traditional Arabic',serif" font-size="92" font-weight="700" fill="${k}">أ</text>`],
+["دائرة يخترقها الألف: ثبات في قلب الحركة.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="62" ${S(k,6)}/><rect x="95" y="24" width="10" height="152" fill="${a}"/>`],
+["قبة متدرجة بثلاث طبقات: عمارة وتناغم.",
+ (k,a,c)=>`<path d="M20 150A80 80 0 0 1 180 150Z" fill="${k}"/><path d="M46 150A54 54 0 0 1 154 150Z" fill="${a}"/><path d="M72 150A28 28 0 0 1 128 150Z" fill="${c}"/><path d="M14 162H186" ${S(k,5)}/>`],
+["خطوط أفقية متزايدة السماكة داخل دائرة: تدرّج الهواء البارد.",
+ (k,a,c)=>[[38,4],[56,6],[76,8],[100,11],[126,14],[156,18]].map(([y,h],i)=>{const yc=y+h/2,ch=Math.sqrt(6400-(yc-100)**2)-2;return `<rect x="${f1(100-ch)}" y="${y}" width="${f1(2*ch)}" height="${h}" fill="${i==5?a:k}"/>`}).join('')],
+["سداسي يحتضن مثلث A: هندسة خلية النحل وكفاءة الأداء.",
+ (k,a,c)=>`<polygon points="${P(6,80)}" ${S(k,5)}/><polygon points="${P(3,40)}" ${S(a,8)}/>`],
+["ثماني نقاط حول ورقة: الرقم 8 في «Octo» مع روح الاستدامة.",
+ (k,a,c)=>`${rep(8,(i,ang)=>G(ang,'<circle cx="100" cy="28" r="9" fill="'+k+'"/>'))}<path d="M100 66C120 86 120 114 100 136C80 114 80 86 100 66Z" fill="${a}"/>`],
+["ثلاثة معيّنات تمثل الركائز الثلاث: الفخامة والاستدامة والأمان.",
+ (k,a,c)=>`<g stroke="${c}" stroke-width="3" stroke-linejoin="round"><polygon points="100,20 132,52 100,84 68,52" fill="${k}"/><polygon points="100,116 132,148 100,180 68,148" fill="${k}"/><polygon points="100,68 132,100 100,132 68,100" fill="${a}"/></g>`],
+["قطرتان بحجمين: ترشيد المياه والطاقة.",
+ (k,a,c)=>`<path d="M80 26C80 26 34 88 34 122A46 46 0 0 0 126 122C126 88 80 26 80 26Z" fill="${k}"/><path transform="translate(152 140) scale(1.1)" d="${DROP}" fill="${a}"/>`],
+["نجمة رباعية مقعّرة: لمعان النظافة والدقة.",
+ (k,a,c)=>`<path d="M100 14Q108 92 186 100Q108 108 100 186Q92 108 14 100Q92 92 100 14Z" fill="${k}"/><circle cx="100" cy="100" r="12" fill="${a}"/>`],
+["دائرة مفصولة بأفق دقيق: شمس وانعكاسها.",
+ (k,a,c)=>`<path d="M20 100A80 80 0 0 1 180 100Z" fill="${a}"/><path d="M20 108A80 80 0 0 0 180 108Z" fill="${k}"/><path d="M50 130H150M70 152H130" ${S(c,4)}/>`],
+["رواق أقواس مدببة: عمارة إسلامية ومساحات مكيّفة.",
+ (k,a,c)=>`${[0,1,2].map(i=>{const x=28+i*48;return `<path d="M${x} 168V108Q${x} 72 ${x+22} 58Q${x+44} 72 ${x+44} 108V168" ${S(k,5)}/><circle cx="${x+22}" cy="112" r="6" fill="${a}"/>`}).join('')}<path d="M18 168H182" ${S(a,5)}/>`],
+["بلاطات باوهاوس من أرباع دوائر ومثلث: توازن هندسي صارم.",
+ (k,a,c)=>`<path d="M32 98A66 66 0 0 1 98 32V98Z" fill="${k}"/><path d="M102 32L168 98H102Z" fill="${a}"/><circle cx="65" cy="135" r="33" ${S(k,5)}/><path d="M168 102A66 66 0 0 1 102 168V102Z" fill="${k}"/>`],
+["سعف نخيل مروحي: هوية محلية وتهوية طبيعية.",
+ (k,a,c)=>`${Array.from({length:7},(_,i)=>{const t=(-160+i*23.33)*Math.PI/180,r=i==3?120:i%2?108:96;return `<path d="M100 172L${f1(100+r*Math.cos(t))} ${f1(172+r*Math.sin(t))}" ${S(i==3?a:k,6)}/>`}).join('')}<circle cx="100" cy="172" r="10" fill="${k}"/>`],
+["حرف O من نصفي حلقة متزاحين: ظل وضوء.",
+ (k,a,c)=>`<path d="M92 30A70 70 0 0 0 92 170" fill="none" stroke="${k}" stroke-width="14"/><path d="M108 30A70 70 0 0 1 108 170" fill="none" stroke="${a}" stroke-width="14"/>`],
+["سحابة صلبة مع خطي نسيم: هواء نقي.",
+ (k,a,c)=>`<g fill="${k}"><circle cx="76" cy="104" r="30"/><circle cx="112" cy="84" r="38"/><circle cx="148" cy="106" r="28"/><rect x="76" y="106" width="72" height="28"/></g><path d="M44 154H124M72 172H152" ${S(a,5)}/>`],
+["دائرة متوازنة بين الدفء والبرودة بمنحنى انسيابي.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="80" ${S(k,4)}/><path d="M100 20A80 80 0 0 1 100 180A40 40 0 0 1 100 100A40 40 0 0 0 100 20Z" fill="${k}"/><circle cx="100" cy="60" r="10" fill="${a}"/><circle cx="100" cy="140" r="10" fill="${a}"/>`],
+["ثلاث قطرات في تكوين مثلث: استقرار واستدامة.",
+ (k,a,c)=>`${[[100,52,k],[60,140,a],[140,140,k]].map(([x,y,f])=>`<path transform="translate(${x} ${y}) scale(1.5)" d="${DROP}" fill="${f}"/>`).join('')}`],
+["توربين رياح: طاقة نظيفة تخدم التكييف المستدام.",
+ (k,a,c)=>`<path d="M100 104V176M72 178H128" ${S(k,5)}/>${rep(3,(i,ang)=>G(ang,`<path d="M100 100L94 30Q100 22 106 30Z" fill="${k}"/>`))}<circle cx="100" cy="100" r="9" fill="${a}"/>`],
+["قرص ترموستات بعلامات متدرجة: تحكّم دقيق في الراحة.",
+ (k,a,c)=>`<circle cx="100" cy="100" r="80" ${S(k,5)}/>${Array.from({length:17},(_,i)=>{const t=(135+i*16.875)*Math.PI/180,r2=i%4==0?70:64;return `<path d="M${f1(100+56*Math.cos(t))} ${f1(100+56*Math.sin(t))}L${f1(100+r2*Math.cos(t))} ${f1(100+r2*Math.sin(t))}" ${S(k,3)}/>`}).join('')}<path d="M100 100L123 60" ${S(a,6)}/><circle cx="100" cy="100" r="9" fill="${k}"/>`],
+["ختم مثمن متداخل: توقيع الجودة الذي يحمل الرقم 8.",
+ (k,a,c)=>`<polygon points="${P(8,84,-67.5)}" fill="${k}"/><polygon points="${P(8,68,-67.5)}" ${S(c,2.5)}/><polygon points="${P(8,46,-67.5)}" fill="${a}"/><circle cx="100" cy="100" r="14" fill="${c}"/>`]
+];
+
+/* ---------- Colour schemes: [ink, accent, background] ---------- */
+const SCH=[["#14213D","#B08D57","#F6F2EA"],["#F6F2EA","#C9A66B","#14213D"],["#1F4D45","#B08D57","#F3EFE6"],["#0B0B0B","#8A6A3B","#EFEAE0"],["#F3EFE6","#7FB5A6","#1F4D45"]];
+const AR="font-family=\"'Cairo','Tajawal','Segoe UI',Tahoma,'Noto Naskh Arabic',sans-serif\"";
+const LA="font-family=\"'Helvetica Neue',Helvetica,Arial,sans-serif\"";
+
+function build(i){
+  const [k,a,c]=SCH[i%5];
+  const mark=L[i][1](k,a,c);
+  const st=i%3;let t='';
+  if(st==0){
+    t=`<text x="150" y="262" text-anchor="middle" ${AR} font-size="25" font-weight="700" fill="${k}">${B.ar}</text><text x="150" y="288" text-anchor="middle" ${LA} font-size="10" letter-spacing="5" fill="${a}">${B.en} ${B.sub}</text>`;
+  }else if(st==1){
+    t=`<text x="150" y="258" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" letter-spacing="8" fill="${k}">${B.en}</text><rect x="130" y="270" width="40" height="2" fill="${a}"/><text x="150" y="294" text-anchor="middle" ${AR} font-size="17" font-weight="600" fill="${a}">${B.ar}</text>`;
+  }else{
+    t=`<text x="150" y="266" text-anchor="middle" ${AR} font-size="27" font-weight="700" fill="${k}">${B.ar}</text><rect x="135" y="278" width="30" height="2" fill="${a}"/><text x="150" y="300" text-anchor="middle" ${LA} font-size="9" letter-spacing="4" fill="${a}">${B.sub}</text>`;
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 310" role="img" aria-label="Logo ${i+1}"><rect width="300" height="310" rx="14" fill="${c}"/><g transform="translate(50,22)">${mark}</g>${t}</svg>`;
+}
+
+/* ---------- Render grid ---------- */
+const svgs=L.map((_,i)=>build(i));
+const grid=document.getElementById('grid');
+grid.innerHTML=L.map((l,i)=>`<article class="card" tabindex="0" data-i="${i}"><div class="meta"><div class="num">${i+1}</div><div class="txt"><h2>الشعار رقم ${i+1}</h2><p>${l[0]}</p></div></div><div class="art">${svgs[i]}</div></article>`).join('');
+
+/* ---------- Modal with zoom / pan ---------- */
+const modal=document.getElementById('modal'),stage=document.getElementById('stage'),vp=document.getElementById('viewport'),cap=document.getElementById('cap'),zl=document.getElementById('zl');
+let s=1,x=0,y=0,drag=null;
+const apply=()=>{stage.style.transform=`translate(${x}px,${y}px) scale(${s})`;zl.textContent=Math.round(s*100)+'%'};
+const reset=()=>{s=1;x=0;y=0;apply()};
+function zoomAt(f,px=0,py=0){const ns=Math.min(12,Math.max(.3,s*f)),r=ns/s;x=px-(px-x)*r;y=py-(py-y)*r;s=ns;apply()}
+function openModal(i){stage.innerHTML=svgs[i];cap.textContent='الشعار رقم '+(i+1)+' — '+L[i][0];reset();modal.classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(){modal.classList.remove('open');stage.innerHTML='';document.body.style.overflow=''}
+grid.addEventListener('click',e=>{const c=e.target.closest('.card');if(c)openModal(+c.dataset.i)});
+grid.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const c=e.target.closest('.card');if(c){e.preventDefault();openModal(+c.dataset.i)}}});
+document.getElementById('zin').onclick=()=>zoomAt(1.25);
+document.getElementById('zout').onclick=()=>zoomAt(1/1.25);
+document.getElementById('zreset').onclick=reset;
+document.getElementById('zclose').onclick=closeModal;
+vp.addEventListener('wheel',e=>{e.preventDefault();const r=vp.getBoundingClientRect();zoomAt(e.deltaY<0?1.15:1/1.15,e.clientX-(r.left+r.width/2),e.clientY-(r.top+r.height/2))},{passive:false});
+vp.addEventListener('pointerdown',e=>{drag={px:e.clientX,py:e.clientY,x,y};vp.classList.add('drag');vp.setPointerCapture(e.pointerId)});
+vp.addEventListener('pointermove',e=>{if(!drag)return;x=drag.x+(e.clientX-drag.px);y=drag.y+(e.clientY-drag.py);apply()});
+const endDrag=()=>{drag=null;vp.classList.remove('drag')};
+vp.addEventListener('pointerup',endDrag);vp.addEventListener('pointercancel',endDrag);
+vp.addEventListener('dblclick',reset);
+document.addEventListener('keydown',e=>{
+  if(!modal.classList.contains('open'))return;
+  if(e.key==='Escape')closeModal();
+  else if(e.key==='+'||e.key==='=')zoomAt(1.25);
+  else if(e.key==='-'||e.key==='_')zoomAt(1/1.25);
+  else if(e.key==='0')reset();
+});
+</script>
+</body>
+</html>
